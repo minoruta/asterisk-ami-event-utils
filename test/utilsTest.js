@@ -17,7 +17,7 @@ describe('Event utils test', () => {
         'Queue: 592'
     ].join(CRLF),
         testEvent = null;
-    
+
     beforeEach(() => {
         testEvent = rawEvent.substr(0);
     });
@@ -46,7 +46,7 @@ describe('Event utils test', () => {
         });
 
     });
-    
+
     describe('rawToObject', () => {
 
         it('with event\'s raw string', () => {
@@ -117,7 +117,7 @@ describe('Event utils test', () => {
                     '0 active channel(s)',
                     '--END COMMAND--'
                 ].join(CRLF) + CRLF.repeat(2);
-            
+
             assert.deepEqual(eventUtil.toObject(commandStr), {
                 Response: 'Follows',
                 Privilege: 'Command',
@@ -125,6 +125,22 @@ describe('Event utils test', () => {
                     'Channel (Context Extension Pri ) State Appl. Data',
                     '0 active channel(s)'
                 ].join(CRLF)
+            });
+        });
+
+        it('with a response includes multiline \'Output\'s', () => {
+            let commandStr = [
+                    'Response: Success',
+                    'Message: Command output follows',
+                    'Output:   Version:                     14.3.0',
+                    'Output:   Build Options:               LOADABLE_MODULES, BUILD_NATIVE, OPTIONAL_API',
+                    'Output:   Maximum calls:               Not set'
+                ].join(CRLF) + CRLF.repeat(2);
+
+            assert.deepEqual(eventUtil.toObject(commandStr), {
+                Response: 'Success',
+                Message: 'Command output follows',
+                Output: 'Version:                     14.3.0\nBuild Options:               LOADABLE_MODULES, BUILD_NATIVE, OPTIONAL_API\nMaximum calls:               Not set'
             });
         });
 
@@ -257,5 +273,5 @@ describe('Event utils test', () => {
         });
 
     });
-    
+
 });
